@@ -80,6 +80,7 @@ if __name__ == "__main__":
                 p.append(plot(solution, show=False)[0])
 
             p.show()
-
+    elif command.upper() == "INSTALL":
+        print('Installed OK!')
     else:
         print(f'Command "{command}" not understood in statement "{" ".join([statement, equation])}."')
