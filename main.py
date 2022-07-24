@@ -5,11 +5,8 @@ from sympy import *
 from sympy.abc import *
 from sympy.plotting import plot
 from sympy.parsing.sympy_parser import parse_expr, \
-    implicit_multiplication, \
     standard_transformations, \
-    implicit_multiplication_application, \
-    _token_splittable, \
-    auto_symbol
+    implicit_multiplication_application
 transformations = (standard_transformations + (implicit_multiplication_application,))
 
 
@@ -20,7 +17,6 @@ if __name__ == "__main__":
     equation.replace(" ", "")
 
     # now we need to parse the Latex (if it was LaTex) that was passed
-    tgt = {s: Symbol(s) for s in list(equation) if s.isalpha()}
 
     command, category, variable_name = statement.split(" ")
 
@@ -33,10 +29,10 @@ if __name__ == "__main__":
         left, right = equation.split("=")
 
         # now run the solver over it and spit out the output
-        left = parse_expr(left, transformations=transformations, local_dict=tgt)
-        right = parse_expr(right, transformations=transformations, local_dict=tgt)
+        left = parse_expr(left, transformations=transformations)
+        right = parse_expr(right, transformations=transformations)
         equality = Eq(left, right)
-        solve_for = tgt[variable_name]
+        solve_for = Symbol(variable_name)
         solutions = solveset(equality, solve_for)
 
         print(f'Solutions for {variable_name}:')
@@ -48,28 +44,28 @@ if __name__ == "__main__":
         if "=" in equation:
             raise Exception('Unexpected equals sign.')
 
-        equation = parse_expr(equation, local_dict=tgt, transformations=transformations)
+        equation = parse_expr(equation, transformations=transformations)
         print(f"The integral of {equation} with respect to {variable_name} is:")
-        print(integrate(equation, tgt[variable_name]))
+        print(integrate(equation, Symbol(variable_name)))
     elif command.upper() == "DERIVATIVE":
         # for a solver to work... well, it has to be more than just an expression
         if "=" in equation:
             raise Exception('Unexpected equals sign.')
 
-        equation = parse_expr(equation, local_dict=tgt, transformations=transformations)
+        equation = parse_expr(equation, transformations=transformations)
         print(f"The derivative of {equation} with respect to {variable_name} is:")
-        print(diff(equation, tgt[variable_name]))
+        print(diff(equation, variable_name))
     elif command.upper() == "PLOT":
         # plot 2d graph
-        x = tgt[category]
-        y = tgt[variable_name]
+        x = Symbol(category)
+        y = Symbol(variable_name)
 
         # now we need to get the variables we want to use
         left, right = equation.split("=")
 
         # now run the solver over it and spit out the output
-        left = parse_expr(left, transformations=transformations, local_dict=tgt)
-        right = parse_expr(right, transformations=transformations, local_dict=tgt)
+        left = parse_expr(left, transformations=transformations)
+        right = parse_expr(right, transformations=transformations)
         equation = Eq(left, right)
         solutions = solveset(equation, y)
 
