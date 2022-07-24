@@ -8,7 +8,8 @@ from sympy.parsing.sympy_parser import parse_expr, \
     implicit_multiplication, \
     standard_transformations, \
     implicit_multiplication_application, \
-    _token_splittable
+    _token_splittable, \
+    auto_symbol
 transformations = (standard_transformations + (implicit_multiplication_application,))
 
 
